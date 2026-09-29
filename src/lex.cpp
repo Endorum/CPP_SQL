@@ -1,4 +1,5 @@
 #include "../include/lex.hpp"
+#include <iostream>
 
 
 bool isKeyword(const std::string& lexeme){
@@ -98,7 +99,34 @@ std::vector<Token> lex(const std::string& query){
             
         }
 
+        else if(c == '\''){
+            pos++; // past '
 
+            std::string lexeme;
+            size_t start = pos;
+
+            while(pos < query.length()){
+                c = query.at(pos);
+            
+                if(c == '\'')
+                    break;
+
+                pos++;
+            }
+            
+            
+
+            lexeme = query.substr(start, pos - start);
+            std::cout << "lexeme: " << lexeme << std::endl;
+
+            
+            pos++; // past '
+
+            token.lexeme = lexeme;
+            token.type = TT_STRING;
+            tokens.push_back(token);
+            continue;
+        }
 
         else if(isalpha(c)){
             std::string lexeme;
@@ -175,6 +203,7 @@ std::string token_type_str(TokenType type){
         case TT_GREATER: return "GREATER";
         case TT_INT: return "INT";
         case TT_STRING: return "STRING";
+        case TT_EOF: return "EOF";
         default: return "UNKNOWN";
     }
 
